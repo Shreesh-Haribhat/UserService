@@ -1,5 +1,7 @@
 package com.UserService.AuthService.Service;
 
+import com.UserService.AuthService.Exception.NoSuchUserExistException;
+import com.UserService.AuthService.Exception.UserUnauthorizedException;
 import com.UserService.AuthService.Model.Token;
 import com.UserService.AuthService.Model.User;
 import com.UserService.AuthService.Repository.UserRepository;
@@ -40,12 +42,11 @@ public class UserService {
 
     }
 
-    public Token login(String email, String password)
-    {
+    public Token login(String email, String password) throws NoSuchUserExistException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isEmpty())
         {
-            throw new RuntimeException("Invalid Email or Password");
+            throw new NoSuchUserExistException("No Such User Found");
         }
 
         User user = optionalUser.get();
@@ -78,12 +79,11 @@ public class UserService {
         return expireDate;
     }
 
-    public void logout(String token)
-    {
+    public void logout(String token) throws UserUnauthorizedException {
         Optional<Token> optionalUser = tokenRepository.findByValueAndIsDeletedEquals(token,false);
         if(optionalUser.isEmpty())
         {
-            throw new RuntimeException("User is invalid");
+            throw new UserUnauthorizedException("Not Authorized");
         }
 
         Token savedToken = optionalUser.get();
@@ -94,15 +94,15 @@ public class UserService {
 
     }
 
-    public Boolean validate(String token)
+    public User validate(String token)
     {
         Optional<Token> optionalToken = tokenRepository.findByValueAndIsDeletedEqualsAndExpireAtGreaterThan(token,false,new Date());
 
         if(optionalToken.isEmpty())
         {
-            return false;
+            return null;
         }
-        return true;
+        return optionalToken.get().getUser();
     }
 
 }

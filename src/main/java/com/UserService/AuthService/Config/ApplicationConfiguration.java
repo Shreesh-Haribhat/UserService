@@ -9,23 +9,23 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class ApplicationConfiguration {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // Allow all requests without authentication, disable CORS and CSRF
-        http
-                .authorizeHttpRequests(requests ->
-                        requests.anyRequest().permitAll()
-                )
-                .cors(cors -> cors.disable())  // Disable CORS
-                .csrf(csrf -> csrf.disable());  // Disable CSRF
-
-        return http.build();
-    }
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+//        // Allow all requests without authentication, disable CORS and CSRF
+//        http
+//                .authorizeHttpRequests(requests ->
+//                        requests.anyRequest().permitAll()
+//                )
+//                .cors(cors -> cors.disable())  // Disable CORS
+//                .csrf(csrf -> csrf.disable());  // Disable CSRF
+//
+//        return http.build();
+//    }
 
     @Bean
     public BCryptPasswordEncoder getBcryptEncoder()
     {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);
     }
 
 
